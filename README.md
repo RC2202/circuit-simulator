@@ -81,14 +81,14 @@ To build your application, run:
 You can now go to `/dist` and deploy that to your server!
 
 
-##How to use?
+## How to use?
 
 * Click on the element to get it on canvas
 * Drag them to position them according to requirement
 * To rotate an element, select it and click on rotate button
 
 
-##Note:
+## Note:
 
 * Only **Vdc** and **R** is functional now
 * Graph is not linked yet
