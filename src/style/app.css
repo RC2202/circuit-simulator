@@ -1,0 +1,47 @@
+
+
+
+svg{
+    border: 1px solid black;
+    position: relative;
+    top: 0;
+    left: 0;    
+}
+
+
+
+.body-content{
+    padding-top: 70px;
+}
+
+.highlight{
+    stroke: #3f0 ;
+    stroke-width: 3px;
+}
+
+path{
+    stroke: #000;
+    stroke-width: 3px;
+}
+
+.highlightPath{
+    stroke: #d00;
+}
+
+/*#towardPos, #towardNeg, #line, #vals{
+    stroke-opacity:0;
+    fill-opacity: 0;
+}*/
+
+
+
+.hideArrow{
+    stroke-opacity:0;
+    fill-opacity: 0;
+}
+
+/*.showArrow{
+    stroke-opacity: 1;
+    fill-opacity: 0;
+}*/
+

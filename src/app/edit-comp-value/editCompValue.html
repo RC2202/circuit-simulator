@@ -1,0 +1,15 @@
+<h3>{{componentName? componentName : "No Component Selected"}}</h3>
+<div class="form-group">
+  <label for="usr">Set Value</label>
+  <input type="number" class="form-control" id="usr" minlength="0" maxlength="100"  [(ngModel)]="currentElementValue">
+</div>
+
+<div class="form-group">
+  <label for="sel1">Set unit</label>
+      <select class="form-control  " id="sel1" [(ngModel)]="selectedUnit">
+        <option *ngFor="let unit of currentElementUnitArray" [ngValue]="unit" >{{unit}}</option>      
+      </select>
+      <div> {{units}}</div>
+<div class="btn-group"> <button (click) = "setValue()" class="btn btn-danger" [disabled] = "!enable" >Set Value</button></div>
+
+</div>
