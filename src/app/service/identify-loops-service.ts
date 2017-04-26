@@ -28,8 +28,11 @@ groupOfElemInLoop: Array<any> = [];
     identifyLoops(nde){
 
         this.groupedArrayOfNodes=nde;
+        this.finalLoopsFound = [];
         this.initialNode = this.groupedArrayOfNodes[0];
         this.arrayOfNodesInCurrentLoop =[];
+        this.foundLoops = [];
+        this.groupOfElemInLoop = [];
         this.arrayOfNodesInCurrentLoop.push(this.initialNode);
 
         for(let n in this.initialNode){

@@ -1,5 +1,8 @@
+/* Not BEING USED */
+
+
 import { Injectable } from '@angular/core';
-import { svgService } from './svg-service';
+// import { svgService } from './svg-service';
 import { wires } from './model';
 // declare let math : any;
 // declare let Snap : any;
@@ -8,11 +11,9 @@ import { wires } from './model';
 export class wireService{
 
     constructor(
-        private svg: svgService
-       
+        // private svg: svgService
     ){
-        console.log(this.svg);
-
+        // console.log(this.svg);
     }
 
 
@@ -27,12 +28,12 @@ export class wireService{
         let selectedPath = allPathsArray[allPathsArray.length-1];
         console.log(selectedPath);
 
-        selectedPath.mouseover(function(){
-            selectedPath.addClass('highlightPath')
-        });
-        selectedPath.mouseout(function(){
-            selectedPath.removeClass('highlightPath');
-        })
+        // selectedPath.hover(function(){
+        //     selectedPath.addClass('highlightPath')
+        // }, function(){
+        //     selectedPath.removeClass('highlightPath');
+        // });
+ 
         this.pathArray.push(new wires(selectedPath, [this.arrayOfTerminals[0][3], this.arrayOfTerminals[1][3]], selectedPath.id ));
         
         }

@@ -6,6 +6,10 @@ svg{
     position: relative;
     top: 0;
     left: 0;    
+    margin-left:5%;
+    width: 90%;
+    margin-right: 5%;
+    height: 80%;
 }
 
 
@@ -16,23 +20,19 @@ svg{
 
 .highlight{
     stroke: #3f0 ;
-    stroke-width: 3px;
+    stroke-width: 5px;
+    cursor: move;
 }
 
 path{
     stroke: #000;
-    stroke-width: 3px;
+    stroke-width: 4px;
 }
 
 .highlightPath{
     stroke: #d00;
+    cursor: pointer;
 }
-
-/*#towardPos, #towardNeg, #line, #vals{
-    stroke-opacity:0;
-    fill-opacity: 0;
-}*/
-
 
 
 .hideArrow{
@@ -40,8 +40,7 @@ path{
     fill-opacity: 0;
 }
 
-/*.showArrow{
-    stroke-opacity: 1;
-    fill-opacity: 0;
-}*/
 
+.hoverR{
+    cursor: pointer;
+}

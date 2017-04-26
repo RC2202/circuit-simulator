@@ -35,10 +35,10 @@ export class svgService{
     pathArray: Array<any> = [];
     count: number = 0;
     flag : number  = 0;
-    offSet: any;
+    // offSet: any;
     public objectSelected: EventEmitter<any> = new EventEmitter(true);
     public clickEvent: EventEmitter<any> = new EventEmitter(true);
-
+    // screenCTM:any;
 
     svgInitialize(){ 
         console.log('Ready to create new svg');
@@ -46,10 +46,11 @@ export class svgService{
         this.paper = Snap('#svgout');
         this.paths = this.paper.g(); // all the paths drawn
         this.elements = this.paper.g(); //all the elements
-        this.offSet = this.paper.node.getScreenCTM();
+        // this.offSet = this.paper.node.getScreenCTM();
         // this.paper.click(this.clickresponse);
         this.paperclick();
-        // this.mousewheelEvent();
+        // this.screenCTM = this.paper.node.getScreenCTM();
+        this.mousewheelEvent();
         
     }
 
@@ -111,6 +112,11 @@ export class svgService{
         // console.log(el);
         // this.drag.dragEventOnComponent(el);
         this.dragEventOnComponent(el);
+        el.hover(function(){
+            el.addClass('hoverR');
+        }, function(){
+            el.removeClass('hoverR');
+        });
     }
 
     dragEventOnComponent(el){
@@ -134,15 +140,9 @@ export class svgService{
     
     paperclick(){
         let self = this; // 
-        let em;
         this.paper.click(clickresponsetrail);
         function clickresponsetrail(event,cx,cy){
             console.log(event);
-            em = {
-                cood: [cx,cy],
-                paper: this.paper,
-                path: this.paths
-            }
             self.clickEvent.emit([cx,cy]);
         }
     }
@@ -152,15 +152,23 @@ export class svgService{
         console.log(this);
         console.log(ev);
         console.log('called');
-        let cx = ev[0];
-        let cy = ev[1];
-        
-        this.elemOnPoint =  Snap.getElementByPoint(cx,cy);
+        let svg = this.paper.node;
+        var pt = svg.createSVGPoint();
+        pt.x = ev[0];
+        pt.y = ev[1];
+        var ptn = pt.matrixTransform(svg.getScreenCTM().inverse());
+        let offSet = this.paper.node.getScreenCTM(); // p.e and p.f
+        // this.paper.circle(cx - w.e,cy - w.f,2);    
+        this.elemOnPoint =  Snap.getElementByPoint(pt.x,pt.y);
             // self.rectToUnfocus = this.paper.selectAll('rect');
         this.removeHighlightClass();
+
         if(this.elemOnPoint.type =="path"){
             console.log('on path');
             console.log(this.elemOnPoint);
+            this.elemOnPoint.addClass("highlight");
+            this.selectedComponentID = this.elemOnPoint.id;
+            this.objectOnPoint = this.getSelectedObject(this.selectedComponentID, "path");
         }
 
         
@@ -169,16 +177,16 @@ export class svgService{
         if(this.elemOnPoint.type =="rect"){
             this.elemOnPoint.addClass("highlight");
             this.selectedComponentID = this.elemOnPoint.parent().id;
-            this.objectOnPoint = this.getSelectedObject(this.selectedComponentID);
+            this.objectOnPoint = this.getSelectedObject(this.selectedComponentID, "element");
             // console.log(this.objectOnPoint);
-            let offSet = this.paper.node.getScreenCTM(); // p.e and p.f
+            
             console.log(offSet);
             this.objectSelected.emit("rect");
 
             let terminalSelectConfirm = /(_positive|_negative)$/;
             if(this.elemOnPoint.attr('id').search(terminalSelectConfirm)!=-1){
-                let x_t = cx-this.offSet.e;
-                let y_t = cy-this.offSet.f;
+                let x_t = ptn.x;//cx-offSet.e;
+                let y_t = ptn.y;//  cy-offSet.f;
                 
                 let terminalID = this.elemOnPoint.attr('id');
                 //  console.log(typeof(terminalID));
@@ -238,9 +246,15 @@ export class svgService{
 
     removeHighlightClass(){
         let rectToUnfocus = this.paper.selectAll('rect');
+        let pathsToUnfocus = this.paths.selectAll('path');
+        // rectToUnfocus.push(this.paths.selectAll('path'));
         for(let rec of rectToUnfocus){
             if(rec.hasClass('highlight')){rec.removeClass('highlight')}
         }
+        for(let path of pathsToUnfocus){
+            if(path.hasClass('highlight')){path.removeClass('highlight')}
+        }
+
     }
 
     wire(){
@@ -248,12 +262,12 @@ export class svgService{
             let selectedPath = allPathsArray[allPathsArray.length-1];
             console.log(selectedPath);
 
-            selectedPath.mouseover(function(){
+            selectedPath.hover(function(){
                 selectedPath.addClass('highlightPath')
-            });
-            selectedPath.mouseout(function(){
+            }, function(){
                 selectedPath.removeClass('highlightPath');
-            })
+            });
+            
             this.pathArray.push(new wires(selectedPath, [this.arrayOfTerminals[0][3], this.arrayOfTerminals[1][3]], selectedPath.id ));
             
     }
@@ -306,8 +320,8 @@ export class svgService{
 
      mousewheelEvent(){
         let self = this;
-        let wi = 400;
-        let hi =300;
+        let wi = 600;
+        let hi = 400;
         if( (/Firefox/i.test(navigator.userAgent)) ) {
             this.paper.node.addEventListener("DOMMouseScroll", mouseWheelHandler, false);
         } else {
@@ -337,21 +351,35 @@ export class svgService{
         this.objectOnPoint[1].svgRefElem.remove();
         console.log(this.currentArray);
         //get the selected object and delete it
-        this.currentArray.splice(this.objectOnPoint[0], 1 );
+        if(this.objectOnPoint[2] =="element"){
+            this.currentArray.splice(this.objectOnPoint[0], 1 );
+        }else if(this.objectOnPoint[2] =="path"){
+            this.pathArray.splice(this.objectOnPoint[0], 1 );
+        }
+        
     }
     
-    getSelectedObject(id: any){
+    getSelectedObject(id: any, type){
         //self--> the svgService
         //this--> element 
         // ignore the warning as it is being called inside the declared function
         // console.log(id);
-
-        for (let item in this.currentArray) {
-            // console.log(item); 
-            if(this.currentArray[item].id == id){
-                return [item, this.currentArray[item]]
+        if(type=="element"){
+            for (let item in this.currentArray) {
+                // console.log(item); 
+                if(this.currentArray[item].id == id){
+                    return [item, this.currentArray[item], "element"]
+                }
             }
+        }else if(type == "path"){
+            for (let item in this.pathArray) {
+                // console.log(item); 
+                if(this.pathArray[item].id == id){
+                    return [item, this.pathArray[item], "path"]
+                }
+            }            
         }
+        
         return null;
     }
 

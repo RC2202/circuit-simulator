@@ -11,12 +11,7 @@ export class electricalComponents{
         public units: Array<string>,//[ohm,kohm,Kohm]
         public selectedUnit: string, //ohm
         public id: number,
-        
-       
-        // public connectedNodeID_positive?: Array<Array<number>>,
-        // public connectedNodeID_negative?: Array<Array<number>>,
-        // public commonWireID?: string,
-       
+
     ){
         //methods
         
@@ -28,32 +23,25 @@ export class electricalComponents{
 export class elementOnCanvas{
     constructor(
         public elements:any, // it has name and svg
-        
-        // public value : number,//[20]
-        // public units: Array<string>,//[ohm,kohm,Kohm]
-        // public selectedUnit: string, //ohm
-        // public id: number,
         public positiveNodeID: number,
         public negativeNodeID:  number,
         public orientation: number,
         public connectedNodeID_positive?: Array<number>,
         public connectedNodeID_negative?: Array<number>,
-        public svgRefElem?: any
-        // public commonWireID?: string
-        
+        public svgRefElem?: any,
+        public id?: any
     ){
 
     }
-    
 }
 
 
 @Injectable()
 export class wires{
     constructor(
-        public elements: any,
+        public svgRefElem: any,
         public nodesOnStart: Array<number>,
-        public wireID: string
+        public id: string
     ){
         // logic for choosing path style
         // based on orientataion, position (2(h,v), 4(l,r,u,d)) of elements in consideration

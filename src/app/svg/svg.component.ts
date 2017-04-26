@@ -27,4 +27,18 @@ export class svgComponent implements OnInit {
         this.solver.pathArray = this.snap.pathArray;
         this.solver.runSimulation();
     }
+
+    clearSvg(){
+        for( let elem of this.snap.currentArray){
+            elem.svgRefElem.remove();
+            
+        }
+
+        for( let elem of this.snap.pathArray){
+            elem.svgRefElem.remove();
+        }
+
+        this.snap.currentArray = [];
+        this.snap.pathArray = [];
+    }
 } 
