@@ -320,8 +320,10 @@ export class svgService{
 
      mousewheelEvent(){
         let self = this;
+    //    let w =  this.paper.attr('viewBox');
         let wi = 600;
         let hi = 400;
+        let ratio = wi/hi;
         if( (/Firefox/i.test(navigator.userAgent)) ) {
             this.paper.node.addEventListener("DOMMouseScroll", mouseWheelHandler, false);
         } else {
@@ -329,18 +331,22 @@ export class svgService{
         }
         function  mouseWheelHandler (ev) { 
             ev.preventDefault();
+            wi = self.paper.node.viewBox.baseVal.width;
+            hi = self.paper.node.viewBox.baseVal.height;
+            ratio = wi/hi;
             console.log( ev.target.localName );
             console.log(ev);
             // self.paper.circle(ev.clientX -10, ev.clientY-140, 9);
             if(ev.deltaY>0){
-                wi+=5;
                 hi+=5;
+                wi+=5*ratio;
             }else{
-                wi-=5;
                 hi-=5;
+                wi-=5*ratio;
             }
-            
-            self.paper.attr({viewBox:0+","+0+","+wi+","+hi});
+            self.paper.node.viewBox.baseVal.width = wi;
+            self.paper.node.viewBox.baseVal.height = hi;
+            // self.paper.attr({viewBox:0+","+0+","+wi+","+hi});
         }
         
     }
