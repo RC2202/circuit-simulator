@@ -24,22 +24,37 @@ constructor(
 pathArray : any = [];
 currentArray: any = [];
 
+nodeGroup: any= [];
+loops: any = [];
+iSol: any;
+I_solution: any;
+meshSet: any;
     runSimulation(){
         console.log('runSimulation');
         // console.log(this.currentArray);
         // this.identifyNodes();
-        let compToAnalyse = 1;
+        // let compToAnalyse = 1;
         // let self = this;
         
-        let nodes = this.nodes.identifyNodes(this.pathArray);
-        let loops = this.identifyLoops.identifyLoops(nodes);
-        console.log(nodes);
-        console.log(loops);
-        let meshSet = (this.mesh.loopsToUseForCal(compToAnalyse, loops, nodes));
-        console.log(meshSet);
-        let iSol = this.current.calculateCurrent(meshSet);
-        let I_solution = this.current.currentThroughComponents(meshSet, iSol);
-        this.current.currentsOnSvg(this.currentArray,I_solution );
+        this.nodeGroup = this.nodes.identifyNodes(this.pathArray);
+        this.loops = this.identifyLoops.identifyLoops(this.nodeGroup);
+        console.log(this.nodeGroup);
+        console.log(this.loops);
+        this.meshSet = (this.mesh.loopsToUseForCal( this.loops, this.nodeGroup));
+        console.log(this.meshSet);
+        if(this.meshSet.length !=0){
+            this.iSol = this.current.calculateCurrent(this.meshSet);
+            if(this.iSol !==0){
+                this.I_solution = this.current.currentThroughComponents(this.meshSet, this.iSol);
+                this.current.currentsOnSvg(this.currentArray,this.I_solution );
+            }else{
+                alert("Check for Parallel DC sources");
+            }
+           
+        }else{
+            alert("Check for open terminals");
+        }
+
     }
 
     

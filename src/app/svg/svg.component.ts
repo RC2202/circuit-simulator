@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { svgService } from '../service/svg-service';
 import { solverService } from '../service/solver-service';
-// declare var Snap : any;
+// declare var svg : any;
 
 @Component({
     selector: 'svg-canvas',
@@ -13,32 +13,33 @@ import { solverService } from '../service/solver-service';
 export class svgComponent implements OnInit {
 
     constructor( 
-        private snap: svgService,
+        private svg: svgService,
         private solver: solverService
         ){}
     
     ngOnInit(){ 
-        this.snap.svgInitialize();
+        this.svg.svgInitialize();
         // console.log(this.solver);
     }
     runSim(){
         console.log('runSim');
-        this.solver.currentArray = this.snap.currentArray;
-        this.solver.pathArray = this.snap.pathArray;
+        this.solver.currentArray = this.svg.currentArray;
+        this.solver.pathArray = this.svg.pathArray;
         this.solver.runSimulation();
     }
 
     clearSvg(){
-        for( let elem of this.snap.currentArray){
+        for( let elem of this.svg.currentArray){
             elem.svgRefElem.remove();
             
         }
 
-        for( let elem of this.snap.pathArray){
+        for( let elem of this.svg.pathArray){
             elem.svgRefElem.remove();
         }
 
-        this.snap.currentArray = [];
-        this.snap.pathArray = [];
+        this.svg.currentArray = [];
+        this.svg.pathArray = [];
+        this.svg.elemCountOnCanvas = 0;
     }
 } 

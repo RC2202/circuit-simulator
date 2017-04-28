@@ -21,12 +21,14 @@ isPresent:boolean = false;
 foundLoops:Array<any> = []; // again array of arrays
 initialNode:any; 
 groupOfElemInLoop: Array<any> = [];
+foundLoopsStringify = [];
 // variables
 
 // functions
 
     identifyLoops(nde){
-
+        this.foundLoopsStringify = [];
+        this.isPresent = false;
         this.groupedArrayOfNodes=nde;
         this.finalLoopsFound = [];
         this.initialNode = this.groupedArrayOfNodes[0];
@@ -39,7 +41,13 @@ groupOfElemInLoop: Array<any> = [];
             this.checkIfNodeExistsInLoop(-this.initialNode[n]);
         }
         console.log(this.foundLoops);
-        this.finalLoopsFound = this.removeDuplicateLoops(this.filterLoops(this.foundLoops));
+        this.finalLoopsFound = this.removeDuplicateLoops(
+            this.filterLoops(
+
+                    this.foundLoops
+                
+            )
+        );
 
         return this.finalLoopsFound
     }
@@ -55,6 +63,7 @@ groupOfElemInLoop: Array<any> = [];
 
     checkIfNodeExistsInLoop(nd){
         let foundNodeIndex = -1;
+        
         for( let nodeIndex in this.arrayOfNodesInCurrentLoop){
             this.isPresent = this.arrayOfNodesInCurrentLoop[nodeIndex].indexOf(nd) !=-1;
             if(this.isPresent){
@@ -69,7 +78,16 @@ groupOfElemInLoop: Array<any> = [];
                 // console.log('Node already exists==> loop found');
                 this.arrayOfNodesInCurrentLoop.push(JSON.parse(JSON.stringify(this.searchgroup(nd)[0])));
                 let  temp = JSON.parse(JSON.stringify(this.arrayOfNodesInCurrentLoop));
-                this.foundLoops.push(JSON.parse(JSON.stringify(temp.slice(foundNodeIndex))));
+                let somerandomTemp = [];
+                for(let w of temp){
+                    somerandomTemp = somerandomTemp.concat(w);
+                }
+                let tempString = somerandomTemp.toString();
+                if(this.foundLoopsStringify.indexOf(tempString)==-1){
+                    this.foundLoopsStringify.push(tempString);
+                    this.foundLoops.push(JSON.parse(JSON.stringify(temp.slice(foundNodeIndex))));
+                }
+                
                 // console.log(this.foundLoops);
                 // console.log(this.arrayOfNodesInCurrentLoop);
                 this.arrayOfNodesInCurrentLoop.pop();
@@ -94,7 +112,28 @@ groupOfElemInLoop: Array<any> = [];
             }
     }
 
+    filterDuplicateLoops(la){
+        let tempParent = [];
+        let filteredArray = [];
+        for(let l of la){
+            // open it
+            let temp = [];
+            for(let a of l){
+                temp = temp.concat(a);
+            }
+            let tempP = temp.toString();
+            if(tempParent.indexOf(tempP) ==-1){
+                tempParent.push(tempP);
+                filteredArray.push(l);
+            }
+        }
+        return filteredArray
+    }
+
+
+
     filterLoops(loopsArray){ //[ [[],[]], [[],[]] ]6
+
         this.groupOfElemInLoop = [];
         for(let loop of loopsArray){// 3
             let ElemInLoop = [];
@@ -116,9 +155,31 @@ groupOfElemInLoop: Array<any> = [];
                 }
             // ElemInLoop.push(res);
         }
-        this.checkForParallelPathInElemLoop(ElemInLoop);
+        this.groupOfElemInLoop = this.groupOfElemInLoop.concat(
+            JSON.parse(
+                JSON.stringify(
+                    this.recursiveLoopInElemLoop(ElemInLoop)
+                    )
+                )
+            );//this.checkForParallelPathInElemLoop(ElemInLoop);
+        let tempGp = JSON.parse(
+            JSON.stringify(
+                this.groupOfElemInLoop
+            )
+        );
+        let count = 0;
+          for (let gd in tempGp){
+                for ( let g of tempGp[gd]){
+                    if( (tempGp[gd]).indexOf(-g) !=-1){
+                        this.groupOfElemInLoop.splice(Number(gd) -count, 1);
+                        count++;
+                        break;
+                    }
+                }
+            }
+
         }
-        //  console.log(groupOfElemInLoop);
+         console.log(this.groupOfElemInLoop);
         return this.groupOfElemInLoop
     }
 
@@ -147,6 +208,47 @@ groupOfElemInLoop: Array<any> = [];
                 this.groupOfElemInLoop.push(JSON.parse(JSON.stringify(e))); // instead push it to an empty array
             }
             
+    }
+
+
+    recursiveLoopInElemLoop(arr){
+        for( let k  = 0 ; k<arr.length; k++){
+            if(arr[k].length == undefined){
+                arr[k] = [arr[k]];
+            }
+        }
+
+        if (arr.length === 0) {
+            return arr;
+        } 
+        else if (arr.length ===1){
+        return arr[0];
+        }
+        else {
+            let result = [];
+            let allCasesOfRest = this.recursiveLoopInElemLoop(arr.slice(1));  // recur with the rest of array
+            for (let c in allCasesOfRest) {
+                for (let i = 0; i < arr[0].length; i++) {
+                    let x = typeof(arr[0][i]);
+                    let y =  typeof(allCasesOfRest[c]);
+                    let _x = arr[0][i];
+                    let _y = allCasesOfRest[c];
+                    if(x =="object" && y == "object"){
+                        result.push(JSON.parse(JSON.stringify(_x.concat(_y))));
+                    }else if(x =="object" && y == "number"){
+                        
+                        result.push(JSON.parse(JSON.stringify(_x.concat(_y))));
+                    }else if(y =="object" && x == "number"){
+                        _y.concat(_x);
+                        result.push(JSON.parse(JSON.stringify(_y.concat(_x))));
+                    }else{
+                        result.push([_y,_x]);
+                    }
+                }
+            }
+            return result;
+        }
+
     }
 
     removeDuplicateLoops(dpl_Loop){// [[1,-3,], [2, -4]]

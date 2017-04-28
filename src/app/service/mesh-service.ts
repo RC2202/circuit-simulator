@@ -25,9 +25,9 @@ export class meshService{
     
     // functions
 
-    loopsToUseForCal(compID, l, n){ // compID = 1 l-> loops found n-->nodes found
+    loopsToUseForCal(l, n){ // compID = 1 l-> loops found n-->nodes found
         // compID --> element through which current is to be decided
-        console.log(compID);
+        // console.log(compID);
         this.currentArray = this.svg.currentArray;
         this.l= l;
         this.n = n;
@@ -43,13 +43,13 @@ export class meshService{
                 return s
             }
         }
-        return "no loop set found"
+        return []
     }
 
 
-    findCommonNodes(fArray, lArray, array){
+    findCommonNodes(fArray, lArray){
             // let temp  = [];
-            console.log(array);
+            // console.log(array);
             let rejectMeshSet = false;
             for(let x of fArray){
                 let pv = lArray.indexOf(x)!=-1; // x x match found
@@ -77,7 +77,7 @@ export class meshService{
     }
 
     isRequriedSetOfMesh(lps){ //[ [1, 2, 3], [3,4,6, ...]]
-        let temp_mesh_node =[];
+        // let temp_mesh_node =[];
         // let flag_m = true;
         let reject ;
         for( let w =0; w<lps.length; w++){
@@ -96,7 +96,7 @@ export class meshService{
             // ambiguous cases
             // UU, RR, LL, DD, UD, RL
                 
-            reject = this.findCommonNodes(lps[w],lps[v], temp_mesh_node);
+            reject = this.findCommonNodes(lps[w],lps[v]);
             if(reject){
                 return true
             }

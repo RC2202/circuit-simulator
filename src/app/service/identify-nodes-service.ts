@@ -27,6 +27,11 @@ groups : Array<Array<number>>= [];
             this.searchInGroup(array);
         }
         console.log(this.groups);
+        for (let g of this.groups){
+            g.sort(function(x,y){
+                return x-y
+            })
+        }
         return this.groups;
 
     }

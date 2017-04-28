@@ -13,7 +13,7 @@ export class leftSidemenu implements OnInit {
     elements: Array<electricalComponents> = [];
     elementOnCanvas: Array<elementOnCanvas> = [];
     // @Output() renderElem: EventEmitter<any> = new EventEmitter<any>();
-    private elemCountOnCanvas: number = 0;
+    // private elemCountOnCanvas: number = 0;
     
 
     constructor(
@@ -132,9 +132,9 @@ export class leftSidemenu implements OnInit {
         let v = JSON.parse(JSON.stringify(this.elements[index]));
         // should call a svg components method
         // console.log(index);
-        this.elemCountOnCanvas +=1;
+        this.svg.elemCountOnCanvas +=1;
         this.svg.renderElement(this.elements[index].svgParse);
-        this.svg.updateCurrentArray( new elementOnCanvas(v, this.elemCountOnCanvas, -this.elemCountOnCanvas, 0, [], []));
+        this.svg.updateCurrentArray( new elementOnCanvas(v, this.svg.elemCountOnCanvas, -this.svg.elemCountOnCanvas, 0, [], []));
 
         let temp_r = this.svg.currentArray[this.svg.currentArray.length -1];
         let symbol = temp_r.elements.symbol;

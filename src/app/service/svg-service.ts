@@ -35,6 +35,7 @@ export class svgService{
     pathArray: Array<any> = [];
     count: number = 0;
     flag : number  = 0;
+    elemCountOnCanvas: number = 0
     // offSet: any;
     public objectSelected: EventEmitter<any> = new EventEmitter(true);
     public clickEvent: EventEmitter<any> = new EventEmitter(true);
@@ -169,12 +170,20 @@ export class svgService{
             this.elemOnPoint.addClass("highlight");
             this.selectedComponentID = this.elemOnPoint.id;
             this.objectOnPoint = this.getSelectedObject(this.selectedComponentID, "path");
+            this.objectSelected.emit("path");
+
+             if(this.arrayOfTerminals.length>0){
+                // second time
+                this.arrayOfTerminals = [];
+                this.count = 0;
+                this.flag = 0;
+            }
         }
 
         
         // this conditional is for selection of elements between which the paths is to be drawn
 
-        if(this.elemOnPoint.type =="rect"){
+       else if(this.elemOnPoint.type =="rect"){
             this.elemOnPoint.addClass("highlight");
             this.selectedComponentID = this.elemOnPoint.parent().id;
             this.objectOnPoint = this.getSelectedObject(this.selectedComponentID, "element");
@@ -240,6 +249,7 @@ export class svgService{
                 this.flag = 0;
             }
             this.selectedComponentID = null;
+            this.objectOnPoint = null;
             this.objectSelected.emit();
         }
     }
@@ -320,7 +330,7 @@ export class svgService{
 
      mousewheelEvent(){
         let self = this;
-    //    let w =  this.paper.attr('viewBox');
+    
         let wi = 600;
         let hi = 400;
         let ratio = wi/hi;
@@ -334,8 +344,8 @@ export class svgService{
             wi = self.paper.node.viewBox.baseVal.width;
             hi = self.paper.node.viewBox.baseVal.height;
             ratio = wi/hi;
-            console.log( ev.target.localName );
-            console.log(ev);
+            // console.log( ev.target.localName );
+            // console.log(ev);
             // self.paper.circle(ev.clientX -10, ev.clientY-140, 9);
             if(ev.deltaY>0){
                 hi+=5;
@@ -354,14 +364,17 @@ export class svgService{
     
     deleteSelectedObject(){
         console.log('deleteSelectedObject');
-        this.objectOnPoint[1].svgRefElem.remove();
-        console.log(this.currentArray);
-        //get the selected object and delete it
-        if(this.objectOnPoint[2] =="element"){
-            this.currentArray.splice(this.objectOnPoint[0], 1 );
-        }else if(this.objectOnPoint[2] =="path"){
-            this.pathArray.splice(this.objectOnPoint[0], 1 );
+        if(this.objectOnPoint != null){
+            this.objectOnPoint[1].svgRefElem.remove();
+            console.log(this.currentArray);
+            //get the selected object and delete it
+            if(this.objectOnPoint[2] =="element"){
+                this.currentArray.splice(this.objectOnPoint[0], 1 );
+            }else if(this.objectOnPoint[2] =="path"){
+                this.pathArray.splice(this.objectOnPoint[0], 1 );
+            }
         }
+        
         
     }
     

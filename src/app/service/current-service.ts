@@ -40,8 +40,13 @@ export class currentService{
         }
         console.log(this.impedenceMatrix);
         console.log(this.voltageMatrix);
-
-        this.impedenceMatrix = math.inv(this.impedenceMatrix);
+        try{
+            this.impedenceMatrix = math.inv(this.impedenceMatrix);
+        }catch(err){
+            // console.error(err);
+            return 0;
+        }
+        
         let I_solution=[];
         for( let im of this.impedenceMatrix){
             I_solution.push(math.multiply( im, this.voltageMatrix) );
