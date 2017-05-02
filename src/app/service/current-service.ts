@@ -79,6 +79,7 @@ export class currentService{
     getCommonElem(f_a, l_a){
         let tempVal = 0;
         let setOfActiveSource = ["Vdc"];
+        try{
             for( let ar of f_a){
                 if(l_a.indexOf(ar)!=-1 || l_a.indexOf(-ar)!=-1){
                     if(setOfActiveSource.indexOf(this.searchForComponent(ar).elements.name) ==-1){
@@ -87,6 +88,12 @@ export class currentService{
                     
                 }   
             }
+        }catch(err){
+            console.error(err);
+            alert('Watch for element short circuit!');
+            tempVal = Infinity;
+        }
+            
             return tempVal
     }
 

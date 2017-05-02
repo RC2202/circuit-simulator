@@ -35,7 +35,9 @@ export class svgService{
     pathArray: Array<any> = [];
     count: number = 0;
     flag : number  = 0;
-    elemCountOnCanvas: number = 0
+    elemCountOnCanvas: number = 0;
+    wireConfig: number =0;
+    bboxArray: any= [];
     // offSet: any;
     public objectSelected: EventEmitter<any> = new EventEmitter(true);
     public clickEvent: EventEmitter<any> = new EventEmitter(true);
@@ -204,6 +206,8 @@ export class svgService{
                     if(this.arrayOfTerminals[0][2].id != this.objectOnPoint[1].id){
                         this.arrayOfTerminals.push([Number(x_t.toFixed(2)), Number(y_t.toFixed(2)), this.objectOnPoint[1],terminal]);
                         this.count+=1;
+                    }else{
+                        alert('Terminal Short Circuit');
                     }
                 }else{
                     this.arrayOfTerminals.push([Number(x_t.toFixed(2)), Number(y_t.toFixed(2)), this.objectOnPoint[1],terminal]);
@@ -214,12 +218,18 @@ export class svgService{
                     // now ensured that terminals have been clicked twice continuously
                     //draw  wire between two terminals
                     console.log(this.arrayOfTerminals);
-                    let pth = this.dynamicGenerationOfPoint(this.arrayOfTerminals);//`<path d = "M${this.arrayOfTerminals[0][0]} ${this.arrayOfTerminals[0][1]} H${this.arrayOfTerminals[1][0]} M${this.arrayOfTerminals[1][0]} ${this.arrayOfTerminals[0][1]} V${this.arrayOfTerminals[1][1]}"/>`;
+                    try{
+                         this.drawWire(this.arrayOfTerminals);
+                    }catch(e){
+                        console.log(e)
+                    }
+                   
+                    // let pth = this.dynamicGenerationOfPoint(this.arrayOfTerminals);//`<path d = "M${this.arrayOfTerminals[0][0]} ${this.arrayOfTerminals[0][1]} H${this.arrayOfTerminals[1][0]} M${this.arrayOfTerminals[1][0]} ${this.arrayOfTerminals[0][1]} V${this.arrayOfTerminals[1][1]}"/>`;
                     // console.log(pth);
-                    let elem = Snap.parse(pth);
-                    this.paths.add(elem);
+                    // let elem = Snap.parse(pth);
+                    // this.paths.add(elem);
                     // push to arrayPath
-                    this.wire();
+                    // this.wire();
                     console.log(this.pathArray);
                     this.count =0;
                     // this.flag = 0;
@@ -267,68 +277,149 @@ export class svgService{
 
     }
 
-    wire(){
-            let allPathsArray = this.paths.selectAll('path');
-            let selectedPath = allPathsArray[allPathsArray.length-1];
-            console.log(selectedPath);
+    drawWire(terminals){
 
-            selectedPath.hover(function(){
-                selectedPath.addClass('highlightPath')
+        var self = this ;
+        let BBox = [];
+        // let flag =0;
+        let dummyH = [
+            terminals[0][1],
+            (terminals[0][1] + terminals[1][1])/2,
+            terminals[0][0]
+        ]; //terminals[0][1];//
+        let dummyV = [
+            terminals[0][0],
+            (terminals[0][0] + terminals[1][0])/2,
+            terminals[0][1]
+            ];
+        let dummy = [dummyH, dummyV];
+        // let pointsOnpath = [];
+        let selectedPath;
+        function pth_horizontal(dummyH){
+            return `M${terminals[0][0]} ${terminals[0][1]} 
+            V${dummyH}  M${terminals[0][0]} ${dummyH} 
+            H${terminals[1][0]} M${terminals[1][0]} ${dummyH}             
+            V${terminals[1][1]}`
+        };
+
+        function pth_vertical(dummyV){
+            return `M${terminals[0][0]} ${terminals[0][1]} 
+            H${dummyV}  M${dummyV} ${terminals[0][1]} 
+            V${terminals[1][1]}  M${dummyV} ${terminals[1][1]} 
+            H${terminals[1][0]}`
+        };
+
+        function renderAndCheckPath(pth){
+
+            selectedPath.attr({d: pth});
+            // let selectedPathBBox = selectedPath.getBBox();
+            // check for bbox intersection
+            let tempPathArray = getPointArrayOfPath(selectedPath);
+            let intersectFlag  = isIntersecting(BBox, tempPathArray);
+
+            if(intersectFlag){
+                return 0;
+            }else{
+                return 1;
+            }
+        };
+
+        function isIntersecting(bbox, tempAr){ console.log(self);
+            for (let b of bbox){
+                // self.paper.path(b.path);
+                for( let w of tempAr){
+                    // self.paper.circle(w.x,w.y, 7);
+                    if(Snap.path.isPointInside(b, w.x, w.y)){
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function getPointArrayOfPath(path){
+            let tempArrayOfPoints = [];
+            let totalLength = path.getTotalLength();
+            // let numberOfPoints = 10;
+            let lengthBtwPts = 30;
+            let ignoreVal = 0;
+            let iteration = totalLength/lengthBtwPts;
+            for(let i =ignoreVal; i<iteration; i++){
+                tempArrayOfPoints.push(JSON.parse(
+                    JSON.stringify(
+                        path.getPointAtLength(i*lengthBtwPts)
+                        )
+                    )
+                );
+            }
+            return tempArrayOfPoints;
+            
+        }
+
+        this.paths.el("path").attr({
+            d: pth_horizontal(dummy[0][0])
+        })
+        // this.paths.add(elem);
+
+        let allPathsArray = this.paths.selectAll('path');
+         selectedPath = allPathsArray[allPathsArray.length-1];
+
+        for( let array of this.currentArray){
+
+           let b =  array.svgRefElem.select('rect').node.getBoundingClientRect(); // top left bottom right width height
+           let offset = self.paper.node.getScreenCTM();// offset.e, offset.f
+           let t = self.paper.node.createSVGPoint();
+          
+           t.x = b.left;
+           t.y = b.top;
+           let ptn = t.matrixTransform(offset.inverse());
+
+            let x = `
+                M${ptn.x},${ptn.y} 
+                ${ptn.x},${ptn.y + b.height} 
+                ${ptn.x + b.width},${ptn.y + b.height} 
+                ${ptn.x + b.width},${ptn.y }
+                z`;
+
+             BBox.push(
+                     JSON.parse(
+                         JSON.stringify(
+                             x
+                         )
+                     )
+                 );
+        }
+
+        selectedPath.hover(function(){
+            selectedPath.addClass('highlightPath')
             }, function(){
                 selectedPath.removeClass('highlightPath');
-            });
-            
-            this.pathArray.push(new wires(selectedPath, [this.arrayOfTerminals[0][3], this.arrayOfTerminals[1][3]], selectedPath.id ));
-            
-    }
-
-     dynamicGenerationOfPoint(array){
-                // dynamically generate non overlapping paths between two points
-                console.log(typeof(array[0][1]));
-            let dummyH = array[0][1];//(array[0][1] + array[1][1])/2;
-            let dummyV = array[0][0];//(array[0][0] + array[1][0])/2; // dummyH => from where the dummy horizontal line will be drawn
-            // dummyH--> y coordinate of first point 
-            /*
-                              ___           
-                     |       |             ____|
-                _____|    ___|            |
-                        path vertical   path horizonal
-            */
-
-            function pth_horizontal(dummyH){
-                return `<path d = "
-                M${array[0][0]} ${array[0][1]} 
-                V${dummyH}  M${array[0][0]} ${dummyH} 
-                H${array[1][0]} M${array[1][0]} ${dummyH}             
-                V${array[1][1]}"/>`
-            };
-
-            function pth_vertical(dummyV){
-                return `<path d = "
-                M${array[0][0]} ${array[0][1]} 
-                H${dummyV}  M${dummyV} ${array[0][1]} 
-                V${array[1][1]}  M${dummyV} ${array[1][1]} 
-                H${array[1][0]}"/>`
-            };
-
-            // line bisection 2d plane
-            //          *------------*-------------*
-            //         (x,y)  (x_b, y_b)   (x_f, y_f)
-
-
-            // rule of path selection
-            // if both are vertical then pth_horizontal
-            // if both are horizontal then pth_vertical
-            
-            if(array[0][2]=="horizontal" && array[0][2]=="horizontal"){
-                return pth_horizontal(dummyH);
-            }else{
-                return pth_vertical(dummyV);
             }
-            
-    }
+        );
 
-     mousewheelEvent(){
+
+        for(let t in dummy){
+            for(let tu of dummy[t]){
+                let pth;
+                if(t == '0'){
+                    pth = pth_horizontal(tu);
+                }else{
+                    pth = pth_vertical(tu);
+                }
+                //call a function to draw and check
+                if(renderAndCheckPath(pth)){
+                   this.pathArray.push(new wires(selectedPath, [this.arrayOfTerminals[0][3], this.arrayOfTerminals[1][3]], selectedPath.id ));
+                    return 1;
+                };
+                
+            }
+        }
+        this.pathArray.push(new wires(selectedPath, [this.arrayOfTerminals[0][3], this.arrayOfTerminals[1][3]], selectedPath.id ));
+        return 0;// no clean wire path found --> will draw the last option
+    }
+    
+
+    mousewheelEvent(){
         let self = this;
     
         let wi = 600;
@@ -404,7 +495,7 @@ export class svgService{
 
     updateCurrentArray(arr :any){
 
-        this.currentArray.push( JSON.parse(JSON.stringify(arr)));
+        this.currentArray.push( arr); //JSON.parse(JSON.stringify(arr)));
 
         this.currentArray[this.currentArray.length -1].svgRefElem =  this.allElem[this.insertedElemIndex];
         this.currentArray[this.currentArray.length -1].id = this.allElem[this.insertedElemIndex].id;
