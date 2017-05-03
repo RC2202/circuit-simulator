@@ -1,10 +1,6 @@
-// import { RangeObservable } from 'rxjs/observable/RangeObservable';
-// import { elementAt } from 'rxjs/operator/elementAt';
-// import { ArrayLikeObservable } from 'rxjs/observable/ArrayLikeObservable';
+
 import { Injectable, EventEmitter } from '@angular/core';
-import { wires } from './model';
-// import { paperClickService } from './paper-click-service'
-// import {wireService} from './wire-service';
+
 declare let Snap : any;
 // declare let math: any;
 // import * as math from 'mathjs';
@@ -41,6 +37,7 @@ export class svgService{
     // offSet: any;
     public objectSelected: EventEmitter<any> = new EventEmitter(true);
     public clickEvent: EventEmitter<any> = new EventEmitter(true);
+    public drawWireEvent: EventEmitter<any> = new EventEmitter(true);
     // screenCTM:any;
 
     svgInitialize(){ 
@@ -219,7 +216,8 @@ export class svgService{
                     //draw  wire between two terminals
                     console.log(this.arrayOfTerminals);
                     try{
-                         this.drawWire(this.arrayOfTerminals);
+                        this.drawWireEvent.emit(this.arrayOfTerminals);
+                        //  this.drawWire(this.arrayOfTerminals);
                     }catch(e){
                         console.log(e)
                     }
@@ -277,148 +275,6 @@ export class svgService{
 
     }
 
-    drawWire(terminals){
-
-        var self = this ;
-        let BBox = [];
-        // let flag =0;
-        let dummyH = [
-            terminals[0][1],
-            (terminals[0][1] + terminals[1][1])/2,
-            terminals[0][0]
-        ]; //terminals[0][1];//
-        let dummyV = [
-            terminals[0][0],
-            (terminals[0][0] + terminals[1][0])/2,
-            terminals[0][1]
-            ];
-        let dummy = [dummyH, dummyV];
-        // let pointsOnpath = [];
-        let selectedPath;
-        function pth_horizontal(dummyH){
-            return `M${terminals[0][0]} ${terminals[0][1]} 
-            V${dummyH}  M${terminals[0][0]} ${dummyH} 
-            H${terminals[1][0]} M${terminals[1][0]} ${dummyH}             
-            V${terminals[1][1]}`
-        };
-
-        function pth_vertical(dummyV){
-            return `M${terminals[0][0]} ${terminals[0][1]} 
-            H${dummyV}  M${dummyV} ${terminals[0][1]} 
-            V${terminals[1][1]}  M${dummyV} ${terminals[1][1]} 
-            H${terminals[1][0]}`
-        };
-
-        function renderAndCheckPath(pth){
-
-            selectedPath.attr({d: pth});
-            // let selectedPathBBox = selectedPath.getBBox();
-            // check for bbox intersection
-            let tempPathArray = getPointArrayOfPath(selectedPath);
-            let intersectFlag  = isIntersecting(BBox, tempPathArray);
-
-            if(intersectFlag){
-                return 0;
-            }else{
-                return 1;
-            }
-        };
-
-        function isIntersecting(bbox, tempAr){ console.log(self);
-            for (let b of bbox){
-                // self.paper.path(b.path);
-                for( let w of tempAr){
-                    // self.paper.circle(w.x,w.y, 7);
-                    if(Snap.path.isPointInside(b, w.x, w.y)){
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        function getPointArrayOfPath(path){
-            let tempArrayOfPoints = [];
-            let totalLength = path.getTotalLength();
-            // let numberOfPoints = 10;
-            let lengthBtwPts = 30;
-            let ignoreVal = 0;
-            let iteration = totalLength/lengthBtwPts;
-            for(let i =ignoreVal; i<iteration; i++){
-                tempArrayOfPoints.push(JSON.parse(
-                    JSON.stringify(
-                        path.getPointAtLength(i*lengthBtwPts)
-                        )
-                    )
-                );
-            }
-            return tempArrayOfPoints;
-            
-        }
-
-        this.paths.el("path").attr({
-            d: pth_horizontal(dummy[0][0])
-        })
-        // this.paths.add(elem);
-
-        let allPathsArray = this.paths.selectAll('path');
-         selectedPath = allPathsArray[allPathsArray.length-1];
-
-        for( let array of this.currentArray){
-
-           let b =  array.svgRefElem.select('rect').node.getBoundingClientRect(); // top left bottom right width height
-           let offset = self.paper.node.getScreenCTM();// offset.e, offset.f
-           let t = self.paper.node.createSVGPoint();
-          
-           t.x = b.left;
-           t.y = b.top;
-           let ptn = t.matrixTransform(offset.inverse());
-
-            let x = `
-                M${ptn.x},${ptn.y} 
-                ${ptn.x},${ptn.y + b.height} 
-                ${ptn.x + b.width},${ptn.y + b.height} 
-                ${ptn.x + b.width},${ptn.y }
-                z`;
-
-             BBox.push(
-                     JSON.parse(
-                         JSON.stringify(
-                             x
-                         )
-                     )
-                 );
-        }
-
-        selectedPath.hover(function(){
-            selectedPath.addClass('highlightPath')
-            }, function(){
-                selectedPath.removeClass('highlightPath');
-            }
-        );
-
-
-        for(let t in dummy){
-            for(let tu of dummy[t]){
-                let pth;
-                if(t == '0'){
-                    pth = pth_horizontal(tu);
-                }else{
-                    pth = pth_vertical(tu);
-                }
-                //call a function to draw and check
-                if(renderAndCheckPath(pth)){
-                   this.pathArray.push(new wires(selectedPath, [this.arrayOfTerminals[0][3], this.arrayOfTerminals[1][3]], selectedPath.id ));
-                    return 1;
-                };
-                
-            }
-        }
-        this.pathArray.push(new wires(selectedPath, [this.arrayOfTerminals[0][3], this.arrayOfTerminals[1][3]], selectedPath.id ));
-        return 0;// no clean wire path found --> will draw the last option
-    }
-    
-
     mousewheelEvent(){
         let self = this;
     
@@ -451,8 +307,7 @@ export class svgService{
         }
         
     }
-
-    
+  
     deleteSelectedObject(){
         console.log('deleteSelectedObject');
         if(this.objectOnPoint != null){

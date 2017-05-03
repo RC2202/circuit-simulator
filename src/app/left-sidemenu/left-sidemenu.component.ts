@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { electricalComponents, elementOnCanvas} from '../service/model';
 import { svgService } from '../service/svg-service';
+import { wireService } from '../service/wire-service';
 // import { svgComponent } from '../svg/svg.component';
 // uses svg renderElement updateCurrentArray currentArray rotateElement deleteSelectedObject
 @Component({
@@ -17,9 +18,10 @@ export class leftSidemenu implements OnInit {
     
 
     constructor(
-        private svg : svgService
+        private svg : svgService,
+        private wire: wireService
     ) {
-        
+         this.svg.drawWireEvent.subscribe(ev => this.wire.drawWire(ev));
     }
     
     ngOnInit() {
