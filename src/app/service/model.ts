@@ -29,7 +29,14 @@ export class elementOnCanvas{
         public connectedNodeID_positive?: Array<number>,
         public connectedNodeID_negative?: Array<number>,
         public svgRefElem?: any,
-        public id?: any
+        public id?: any,
+        public voltage?: number,
+        public current?: number,
+        public voltageFlag?: boolean,
+        public currentFlag?: boolean,
+        public currentScopeFlag?: boolean,
+        public voltageScopeFlag?: boolean
+        
     ){
 
     }
@@ -41,7 +48,8 @@ export class wires{
     constructor(
         public svgRefElem: any,
         public nodesOnStart: Array<number>,
-        public id: string
+        public id: string,
+        
     ){
         // logic for choosing path style
         // based on orientataion, position (2(h,v), 4(l,r,u,d)) of elements in consideration

@@ -96,7 +96,7 @@ export class leftSidemenu implements OnInit {
         //         </g>
                 
         //         <rect id="Gnd_rect" y="126" x="165" height="25" width="25" id="rect4214" style="fill-rule:nonzero;fill:rgba(0,0,0,0);stroke-dasharray:none;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4"/>
-        //         <rect id = "Gnd_positive" y="126" x="175" height="5" width="5" id="rect4188" style="fill-rule:nonzero;fill:#fff ;stroke: #000;stroke-dasharray:none;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4"/>
+        //         <rect id = "Gnd_positive" y="122" x="173" height="10" width="10" id="rect4188" style="fill-rule:nonzero;fill:#fff ;stroke: #000;stroke-dasharray:none;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4"/>
         //         </g>`,
         //         0,
         //         [],

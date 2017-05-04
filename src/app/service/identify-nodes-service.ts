@@ -15,18 +15,24 @@ export class identifyNodesService{
 groups : Array<Array<number>>= [];
   
     identifyNodes(pathArray){
+
+        let pathArrayCopy = JSON.parse(
+            JSON.stringify(
+                pathArray
+            )
+        );
         let tempArray = [];
         this.groups = [];
-        for(let path of pathArray){
+        for(let path of pathArrayCopy){
             tempArray.push(path.nodesOnStart);
         }
-        console.log(tempArray);
+        // console.log(tempArray);
         // let groups = []; let groups_temp = [];
 
         for (let array of tempArray){
             this.searchInGroup(array);
         }
-        console.log(this.groups);
+        // console.log(this.groups);
         for (let g of this.groups){
             g.sort(function(x,y){
                 return x-y

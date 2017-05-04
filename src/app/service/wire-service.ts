@@ -31,14 +31,18 @@ export class wireService{
         let selectedPath;
         this.dummyH = [
             terminals[0][1],
+            terminals[1][1],
             (terminals[0][1] + terminals[1][1])/2,
-            terminals[0][0]
+            (-terminals[0][1] + 3*terminals[1][1])/2,
+            (3*terminals[0][1] - terminals[1][1])/2
         ]; //terminals[0][1];//
 
         this.dummyV = [
             terminals[0][0],
+            terminals[1][0],
             (terminals[0][0] + terminals[1][0])/2,
-            terminals[0][1]
+            (-terminals[0][0] + 3*terminals[1][0])/2,
+            (3*terminals[0][0] - terminals[1][0])/2,
             ];
         this.dummy = [this.dummyH, this.dummyV];
         
@@ -57,7 +61,7 @@ export class wireService{
             }
         );
 
-
+        // I can create more path options here
         for(let t in this.dummy){
             for(let tu of this.dummy[t]){
                 let pth;
@@ -169,14 +173,14 @@ export class wireService{
 
 
     AreUniqueTerminals(terminals){
-        console.log(terminals);
+        // console.log(terminals);
 
         // get nodes
         // check if teh terminals lie in the same node
         let nodes = this.node.identifyNodes(this.svg.pathArray);
         for( let n of nodes){
            let s=  n.indexOf(terminals[0][3]) != -1;
-           let e = n.indexOf(terminals[0][3]) != -1;
+           let e = n.indexOf(terminals[1][3]) != -1;
 
            if(s && e){
                return false

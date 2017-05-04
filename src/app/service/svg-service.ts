@@ -64,7 +64,7 @@ export class svgService{
     }
 
     rotateElement(){
-        if(this.selectedComponentID != null){
+        if(this.elemOnPoint.type =="rect"){
         let updatedElem = this.updateSelectedElem(this.selectedComponentID);  
         let bbox = updatedElem.getBBox(); //bounding box, get coords and centre
         let rotateMat = new Snap.Matrix();
@@ -121,17 +121,17 @@ export class svgService{
 
     dragEventOnComponent(el){
         let  onmove = function(x,y){
-            console.log('move drag');
+            // console.log('move drag');
             this.attr({
                 transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [x, y]
             });
         }
         let onend = function (){
-        console.log('finished dragging');
+        // console.log('finished dragging');
         }
     
         let onstart =function (){
-            console.log('start drag');
+            // console.log('start drag');
             this.data('origTransform', this.transform().local );
         }  
         el.drag(onmove, onstart, onend);
@@ -149,16 +149,14 @@ export class svgService{
 
    
     onPaperClick(ev){
-        console.log(this);
-        console.log(ev);
+        // console.log(this);
+        // console.log(ev);
         console.log('called');
         let svg = this.paper.node;
         var pt = svg.createSVGPoint();
         pt.x = ev[0];
         pt.y = ev[1];
-        var ptn = pt.matrixTransform(svg.getScreenCTM().inverse());
-        let offSet = this.paper.node.getScreenCTM(); // p.e and p.f
-        // this.paper.circle(cx - w.e,cy - w.f,2);    
+        var ptn = pt.matrixTransform(svg.getScreenCTM().inverse());    
         this.elemOnPoint =  Snap.getElementByPoint(pt.x,pt.y);
             // self.rectToUnfocus = this.paper.selectAll('rect');
         this.removeHighlightClass();
@@ -178,8 +176,6 @@ export class svgService{
                 this.flag = 0;
             }
         }
-
-        
         // this conditional is for selection of elements between which the paths is to be drawn
 
        else if(this.elemOnPoint.type =="rect"){
@@ -188,7 +184,7 @@ export class svgService{
             this.objectOnPoint = this.getSelectedObject(this.selectedComponentID, "element");
             // console.log(this.objectOnPoint);
             
-            console.log(offSet);
+            // console.log(offSet);
             this.objectSelected.emit("rect");
 
             let terminalSelectConfirm = /(_positive|_negative)$/;
@@ -214,27 +210,17 @@ export class svgService{
                 if(this.count==2){
                     // now ensured that terminals have been clicked twice continuously
                     //draw  wire between two terminals
-                    console.log(this.arrayOfTerminals);
                     try{
                         this.drawWireEvent.emit(this.arrayOfTerminals);
                         //  this.drawWire(this.arrayOfTerminals);
                     }catch(e){
                         console.log(e)
                     }
-                   
-                    // let pth = this.dynamicGenerationOfPoint(this.arrayOfTerminals);//`<path d = "M${this.arrayOfTerminals[0][0]} ${this.arrayOfTerminals[0][1]} H${this.arrayOfTerminals[1][0]} M${this.arrayOfTerminals[1][0]} ${this.arrayOfTerminals[0][1]} V${this.arrayOfTerminals[1][1]}"/>`;
-                    // console.log(pth);
-                    // let elem = Snap.parse(pth);
-                    // this.paths.add(elem);
-                    // push to arrayPath
-                    // this.wire();
-                    console.log(this.pathArray);
+
                     this.count =0;
                     // this.flag = 0;
                     this.arrayOfTerminals=[];
                 }
-                    // this.flag =1;
-                    
                     // check for duplicacy
             }else{
                 // you have not clicked a rectange
@@ -245,9 +231,7 @@ export class svgService{
                     this.flag = 0;
                 }
             }
-            // 
-            
-                
+         
         }else{
             //set selectedElem to null
             if(this.arrayOfTerminals.length>0){
@@ -351,10 +335,9 @@ export class svgService{
     updateCurrentArray(arr :any){
 
         this.currentArray.push( arr); //JSON.parse(JSON.stringify(arr)));
-
         this.currentArray[this.currentArray.length -1].svgRefElem =  this.allElem[this.insertedElemIndex];
         this.currentArray[this.currentArray.length -1].id = this.allElem[this.insertedElemIndex].id;
-        console.log(this.currentArray);
+        // console.log(this.currentArray);
     }
 
     getCurrentArray(){

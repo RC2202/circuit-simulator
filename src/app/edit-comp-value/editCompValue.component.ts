@@ -14,6 +14,7 @@ export class editCompValue implements OnInit {
     componentName: string = "";
     selectedUnit: string ="";
     enable: boolean = false;
+    currentElementVoltageFlag = false;
     // units: any;
     constructor(private svg : svgService) {
         this.svg.objectSelected.subscribe(ev => this.componentSelected(ev));
@@ -22,22 +23,25 @@ export class editCompValue implements OnInit {
     ngOnInit() { }
 
     componentSelected(ev){
-        console.log(ev);
+        // console.log(ev);
         try{
-            console.log('trying');
-            console.log(this.svg.objectOnPoint);
+            // console.log('trying');
+            // console.log(this.svg.objectOnPoint);
             if(ev=="rect"){
                 this.currentElementUnitArray = this.svg.objectOnPoint[1].elements.units;
                 this.currentElementValue = this.svg.objectOnPoint[1].elements.value;
                 this.componentName = this.svg.objectOnPoint[1].elements.name;
                 this.selectedUnit = this.svg.objectOnPoint[1].elements.selectedUnit;
+                this.currentElementVoltageFlag = this.svg.objectOnPoint[1].voltageFlag;
                 this.enable = true;
+
             }else{
                 this.currentElementUnitArray = [];
                 this.currentElementValue = undefined;
                 this.componentName = "";
                 this.selectedUnit = "";
                 this.enable = false;
+                this.currentElementVoltageFlag = false;
             }
             
         }catch(err){
@@ -46,7 +50,7 @@ export class editCompValue implements OnInit {
     }
 
    setValue(){
-        console.log(this.currentElementValue, this.selectedUnit);
+        // console.log(this.currentElementValue, this.selectedUnit);
         let temp_ob =  this.svg.currentArray[this.svg.objectOnPoint[0]];
         let temp_selectedUnit = JSON.parse(JSON.stringify(this.selectedUnit));
         if(temp_selectedUnit=="ohm" || "M ohm" || "K ohm"){
@@ -56,5 +60,6 @@ export class editCompValue implements OnInit {
         temp_ob.elements.value = this.currentElementValue;
         temp_ob.elements.selectedUnit =  this.selectedUnit;
         temp_ob.svgRefElem.select('text').node.innerHTML = textInner;
+        temp_ob.voltageFlag = JSON.parse(JSON.stringify(this.currentElementVoltageFlag));
    }
 }

@@ -20,7 +20,7 @@ import { appComponent }  from './app.component';
 import { svgComponent } from '../svg/svg.component';
 import { leftSidemenu } from '../left-sidemenu/left-sidemenu.component';
 import { editCompValue } from '../edit-comp-value/editCompValue.component';
-
+import { solution } from '../solution/solution.component';
 
 @NgModule({
   imports:      [ 
@@ -32,7 +32,8 @@ import { editCompValue } from '../edit-comp-value/editCompValue.component';
       svgComponent, 
         leftSidemenu,
       editCompValue, 
-      outputPlot
+      outputPlot,
+      solution
     ],
   providers:    [ 
       svgService,

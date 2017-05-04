@@ -35,7 +35,7 @@ export class meshService{
         this.numberOfBranches = this.currentArray.length;
         this.numberOfLoopsRequired = this.numberOfBranches - n.length +1 ;
         this.recursive(this.numberOfLoopsRequired-1, 0, []);
-        console.log( this.set );
+        // console.log( this.set );
 
         for( let s of this.set){
             // s -- lps
@@ -62,17 +62,6 @@ export class meshService{
                 } 
             }
 
-            // for(let t of temp){
-            //     if(array.indexOf(t) != -1){
-            //         rejectMeshSet = true; // implies not the required mesh set
-            //         break;
-            //     }
-            // }
-
-            // if(!rejectMeshSet){
-            //     array = array.concat(JSON.parse(JSON.stringify(temp)));
-            // }
-
             return rejectMeshSet
     }
 
@@ -81,21 +70,7 @@ export class meshService{
         // let flag_m = true;
         let reject ;
         for( let w =0; w<lps.length; w++){
-            for(let v =w+1; v<lps.length; v++){
-            // before this ... confirm clockwise anticlockwise orientation
-            // get Up and Right status of each element
-            // Up + -
-            // R  + -
-
-            // encounter alteast one up and one right to now the orientation
-            // U-R --> clockwise
-            // U-L --> anticlockwise
-            // D-L --> clockwise
-            // D-R --> anticlockwise
-
-            // ambiguous cases
-            // UU, RR, LL, DD, UD, RL
-                
+            for(let v =w+1; v<lps.length; v++){    
             reject = this.findCommonNodes(lps[w],lps[v]);
             if(reject){
                 return true

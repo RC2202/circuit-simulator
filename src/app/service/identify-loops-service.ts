@@ -40,7 +40,7 @@ foundLoopsStringify = [];
         for(let n in this.initialNode){
             this.checkIfNodeExistsInLoop(-this.initialNode[n]);
         }
-        console.log(this.foundLoops);
+        // console.log(this.foundLoops);
         this.finalLoopsFound = this.removeDuplicateLoops(
             this.filterLoops(
 
@@ -179,7 +179,7 @@ foundLoopsStringify = [];
             }
 
         }
-         console.log(this.groupOfElemInLoop);
+        //  console.log(this.groupOfElemInLoop);
         return this.groupOfElemInLoop
     }
 

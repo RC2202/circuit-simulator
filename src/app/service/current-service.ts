@@ -38,8 +38,8 @@ export class currentService{
 
             this.impedenceMatrix.push(tm);
         }
-        console.log(this.impedenceMatrix);
-        console.log(this.voltageMatrix);
+        // console.log(this.impedenceMatrix);
+        // console.log(this.voltageMatrix);
         try{
             this.impedenceMatrix = math.inv(this.impedenceMatrix);
         }catch(err){
@@ -116,7 +116,7 @@ export class currentService{
         // make an array of size -> no. of components and init value zero
         // each loop--> get the element--> add the value of current for that loop
         // return the element and the corresponding current
-        console.log(impedMat);
+        // console.log(impedMat);
 
         for(let i  = 0; i<impedMat.length; i++){
             // let sol_temp = I_soln[i];
@@ -129,21 +129,35 @@ export class currentService{
             }
         }
 
-        console.log(soln_obj);
+        // console.log(soln_obj);
+
+
         return soln_obj;
 
     }
     currentsOnSvg(currentArray, solution){
-        console.log(solution);
+        // console.log(solution);
         for (let elem of currentArray){
             let id=  elem.positiveNodeID;
             
             let value =  math.round(solution[id],2);
-           
+            
             let v = elem.svgRefElem.select('#vals');
             let l = elem.svgRefElem.select('#line');
             let p = elem.svgRefElem.select('#towardPos'); 
             let n = elem.svgRefElem.select('#towardNeg'); 
+
+            elem.current = value;
+
+            if(elem.elements.name =="Vdc"){
+                elem.voltage =  elem.elements.value;
+            }else{
+                var temp = value* elem.elements.value;
+                temp = math.round(temp,2);
+                elem.voltage = math.abs(temp);
+  
+            }
+            
 
             l.hasClass('hideArrow')? l.removeClass('hideArrow') : '' ; 
             v.hasClass('hideArrow')? v.removeClass('hideArrow') : '' ; 
