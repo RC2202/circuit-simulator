@@ -26,32 +26,22 @@
 
                 <div class="row">
 
-                <solution > </solution>
+                <solution #sol> </solution>
                 </div>
           </div>
           <div class="col-md-7 " >
-              <svg-canvas></svg-canvas>
+              <svg-canvas (change) = "sol.update(); ed.componentSelected()"></svg-canvas>
           </div>
           <div class="col-md-2 ">
             <div class = "row">
-              <edit-comp-value></edit-comp-value>
+              <edit-comp-value #ed ></edit-comp-value>
             </div>
             <div class = "row">
                <output-plot></output-plot>
             </div>
           </div>
         </div>
-          <!--<div class="row">
-            <div class="col-md-9">
-              <svg-canvas></svg-canvas>
-            </div>
-          
-        </div>-->
-        <!--<div class ="row">
-          <div class="col-md-9">
-            <edit-comp-value></edit-comp-value>
-          </div>
-        </div>-->
+
           <div class = "row">
             <div class="col-md-9">
              

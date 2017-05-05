@@ -58,3 +58,13 @@ path{
     color: red
     
 }
+
+.red{
+    stroke: red
+}
+.green{
+    stroke: green
+}
+.blue{
+    stroke: blue;
+}

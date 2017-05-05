@@ -14,16 +14,24 @@ export class editCompValue implements OnInit {
     componentName: string = "";
     selectedUnit: string ="";
     enable: boolean = false;
-    currentElementVoltageFlag = false;
+    currentElementVoltageFlag:boolean = false;
+    currentElementcurrentScopeFlag: boolean = false;
+    currentElementvoltageScopeFlag:boolean = false;
+
     // units: any;
     constructor(private svg : svgService) {
         this.svg.objectSelected.subscribe(ev => this.componentSelected(ev));
      }
 
-    ngOnInit() { }
+    ngOnInit() {
+        this.currentElementVoltageFlag = false;
+        // this.currentElementcurrentScopeFlag = false;
+        // this.currentElementvoltageScopeFlag = false;
+     }
 
     componentSelected(ev){
         // console.log(ev);
+        // console.log('cmp')
         try{
             // console.log('trying');
             // console.log(this.svg.objectOnPoint);
@@ -33,6 +41,8 @@ export class editCompValue implements OnInit {
                 this.componentName = this.svg.objectOnPoint[1].elements.name;
                 this.selectedUnit = this.svg.objectOnPoint[1].elements.selectedUnit;
                 this.currentElementVoltageFlag = this.svg.objectOnPoint[1].voltageFlag;
+                // this.currentElementcurrentScopeFlag = this.svg.objectOnPoint[1].currentScopeFlag;
+                // this.currentElementvoltageScopeFlag = this.svg.objectOnPoint[1].voltageScopeFlag;
                 this.enable = true;
 
             }else{
@@ -42,6 +52,8 @@ export class editCompValue implements OnInit {
                 this.selectedUnit = "";
                 this.enable = false;
                 this.currentElementVoltageFlag = false;
+                // this.currentElementcurrentScopeFlag = false;
+                // this.currentElementvoltageScopeFlag = false;
             }
             
         }catch(err){
@@ -50,6 +62,15 @@ export class editCompValue implements OnInit {
     }
 
    setValue(){
+       if(this.currentElementVoltageFlag == undefined){
+           this.currentElementVoltageFlag = false;
+       }
+    //    if(this.currentElementcurrentScopeFlag == undefined){
+    //        this.currentElementcurrentScopeFlag =false;
+    //    }
+    //    if(this.currentElementvoltageScopeFlag== undefined){
+    //        this.currentElementvoltageScopeFlag = false;
+    //    }
         // console.log(this.currentElementValue, this.selectedUnit);
         let temp_ob =  this.svg.currentArray[this.svg.objectOnPoint[0]];
         let temp_selectedUnit = JSON.parse(JSON.stringify(this.selectedUnit));
@@ -61,5 +82,8 @@ export class editCompValue implements OnInit {
         temp_ob.elements.selectedUnit =  this.selectedUnit;
         temp_ob.svgRefElem.select('text').node.innerHTML = textInner;
         temp_ob.voltageFlag = JSON.parse(JSON.stringify(this.currentElementVoltageFlag));
+        // temp_ob.currentScopeFlag = JSON.parse(JSON.stringify(this.currentElementcurrentScopeFlag));
+        // temp_ob.voltageScopeFlag = JSON.parse(JSON.stringify(this.currentElementvoltageScopeFlag));
+
    }
 }

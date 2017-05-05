@@ -1,25 +1,78 @@
-<h2> Graph</h2>
+<h3> Graph</h3>
 
 
 <svg id = "graph" width = "200"  height="100" viewBox = "0, 0, 200, 100">
 
     <g
-     transform="translate(0,-952.36223)"
+     transform="translate(0,0)"
      id="layer1">
     <path
        id="path4136"
-       d="m 21.071421,959.14794 0,89.64286"
+       d="M0,50 L200,50"
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <path
        id="path4138"
-       d="M 3.2142781,1005.9337 194.2857,1004.5051"
+       d="M25,0 L25,100"
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    
+    
+    <path
+       id="y1"
+       d="M20,0 L30,0"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <text x = "0" y = "10" id = "t1"> {{t[0]}}</text>
+    <path
+       id="y2"
+       d="M20,25 L30,25"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <text x = "0" y = "25" id = "t2">{{t[1]}} </text>
+    <path
+       id="y3"
+       d="M20,75 L30,75"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <text x = "0" y = "75" id = "t3"> {{t[2]}}</text>   
+    <path
+       id="y4"
+       d="M20,100 L30,100"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <text x = "0" y = "100" id = "t4"> {{t[3]}}</text>
   </g>
 
 </svg>
 
 
+<div class ="row">
+    <fieldset class="form-group">
+    <div class="form-check form-check-inline">
+      <label class="form-check-label">
+        <input class="form-check-input" name ="options" type="radio" [value]="1" [(ngModel)] = "choice"> Current(A)
+      </label>
+    </div>
+    <div class="form-check form-check-inline">
+      <label class="form-check-label">
+        <input class="form-check-input" name ="options" type="radio" [value]="2" [(ngModel)] = "choice"> Voltage(V)
+      </label>
+    </div>
+    <!--<div class="form-check form-check-inline disabled">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" disabled> 3
+      </label>
+    </div>-->
+
+  </fieldset>
+</div>
+<div class ="row">
+    <div class="form-group">
+      <label for="sel1">Element to scope</label>
+      <select class="form-control  " id="sel1" [(ngModel)]="elemSelected" >
+        <option name = "dropdown" *ngFor="let elem of currentArray; let i = index" [ngValue]="i" >{{elem.elements.symbol + elem.positiveNodeID}}</option>      
+      </select>
+      
+    </div>
+</div>
+
+
 <div class = "row">
-  <div class="btn-group"> <button (click) = "start()" class="btn btn-danger">Start</button></div>
+  <div class="btn-group"> <button (click) = "graph()" class="btn btn-danger">Plot</button></div>
   <div class="btn-group"> <button (click) = "stop()" class="btn btn-light">Stop</button></div>
 </div>

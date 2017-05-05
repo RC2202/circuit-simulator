@@ -1,10 +1,4 @@
 import { Component } from '@angular/core';
-// import { BrowserModule } from '@angular/platform-browser';
-// import { electricalComponents } from '../service/model';
-// import {Snap} from 'snapsvg';
-// import Snap = require('snapsvg');
-// import * as Snap from 'snapsvg'
-// declare var Snap : any;
 import { svgService } from '../service/svg-service';
 
 @Component({
@@ -20,7 +14,12 @@ constructor(
   private svg : svgService,
 ){
   this.elements = this.svg.currentArray;
-  console.log(this.elements)
+  // console.log(this.elements)
+}
+
+update(){
+  console.log('update');
+  this.elements = this.svg.currentArray;
 }
 
     

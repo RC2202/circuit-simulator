@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Output, EventEmitter} from '@angular/core';
 import { svgService } from '../service/svg-service';
 import { solverService } from '../service/solver-service';
 // declare var svg : any;
@@ -17,6 +17,10 @@ export class svgComponent implements OnInit {
         private solver: solverService
         ){}
     
+    @Output()
+    change: EventEmitter<number> = new EventEmitter<any>();
+
+
     ngOnInit(){ 
         this.svg.svgInitialize();
         // console.log(this.solver);
@@ -41,5 +45,6 @@ export class svgComponent implements OnInit {
         this.svg.currentArray = [];
         this.svg.pathArray = [];
         this.svg.elemCountOnCanvas = 0;
+        this.change.emit();
     }
 } 

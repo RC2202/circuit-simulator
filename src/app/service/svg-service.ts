@@ -299,7 +299,9 @@ export class svgService{
             console.log(this.currentArray);
             //get the selected object and delete it
             if(this.objectOnPoint[2] =="element"){
+                this.deleteAssociatedPaths(this.objectOnPoint[0].positiveNodeID);
                 this.currentArray.splice(this.objectOnPoint[0], 1 );
+                
             }else if(this.objectOnPoint[2] =="path"){
                 this.pathArray.splice(this.objectOnPoint[0], 1 );
             }
@@ -345,7 +347,19 @@ export class svgService{
     }
 
 
-   
+   deleteAssociatedPaths(pId){
+       console.log(pId);
+       let count = 0;
+       for(let path in this.pathArray){
+           if(this.pathArray[path].indexOf(pId) !=-1 || this.pathArray[path].indexOf(-pId) !=-1 ){
+               // path is connected to deleted element
+               this.pathArray[path].svgRefElem.remove();
+               this.pathArray.splice(Number(path) - count, 1 );
+               count++;
+           }
+       }
+       
+   }
 
 
 }
