@@ -53,8 +53,12 @@ export class outputPlot implements OnInit, OnDestroy {
         let y_multiplier = 1; // max(f(t))*2/height_graph
         let animationTime = 2000; //ms //tamebase
         // let samplerate = width_graph/animationTime ; // px/ms
-
-        this.t = [-2*x, "", "", 2*x];
+        if(x>0){
+             this.t = [2*x, "", "", -2*x];
+        }else{
+            this.t = [-2*x, "", "", 2*x];
+        }
+       
         
         function callback(){
             console.log('callback1');
