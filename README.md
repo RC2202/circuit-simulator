@@ -91,10 +91,8 @@ You can now go to `/dist` and deploy that to your server!
 ## Note:
 
 * Only **Vdc** and **R** is functional now
-* Graph is not linked yet
-* Only current through elements can be found
-* Node voltage is yet to be implemented
-* Ground  is not yet implemented
+
+
 
 
 
