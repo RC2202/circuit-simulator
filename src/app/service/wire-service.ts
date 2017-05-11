@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { svgService } from './svg-service';
 import { wires } from './model';
 import { identifyNodesService } from './identify-nodes-service';
-// declare let math : any;
+import * as math from 'mathjs';
 declare let Snap : any;
 
 @Injectable()
@@ -187,6 +187,66 @@ export class wireService{
            }
         }
         return true
+
+    }
+
+    reWire(id){
+        // get the wires connected to this node
+        // get the node ends of the wire (other end)
+        // solve for their location
+        // draw wire
+        this.svg.arrayOfTerminals = [];
+
+        for(let i of this.svg.pathArray){
+            let p = i.nodesOnStart.indexOf(id);
+            let n = i.nodesOnStart.indexOf(-id);
+
+
+            if(p!= -1 || n!= -1){
+                // positive node 
+                this.findTerminalCoordinate(i.nodesOnStart[0]);
+                this.findTerminalCoordinate(i.nodesOnStart[1]);
+                this.drawWire(this.svg.arrayOfTerminals);
+                this.svg.arrayOfTerminals = [];
+
+            }
+            // if(n!= -1){
+            //     // negative node  
+            //     if(n == 1){
+                    
+            //     }else{
+
+            //     }
+
+            // }
+           
+        }
+    }
+
+    findTerminalCoordinate(terminalID){
+        let isPositive = terminalID>=0;
+        
+        let temp = this.svg.getSelectedObject(math.abs(terminalID), 'element');
+        let pterm = temp[1].svg.elements.name+'_positive';
+        let nterm =  temp[1].svg.elements.name+'_negative';;
+        if(isPositive){
+           var x=  temp[1].svgRefElem.select(pterm);
+        }else{
+            var x=  temp[1].svgRefElem.select(nterm);
+        }
+         var node =   this.getBBoxCentre(x);
+        this.svg.arrayOfTerminals.push([node[0], node[1], temp[1], terminalID]);
+        
+    }
+
+    getBBoxCentre(ref){
+           let b =  ref.node.getBoundingClientRect(); // top left bottom right width height
+           let offset = this.svg.paper.node.getScreenCTM();// offset.e, offset.f
+           let t = this.svg.paper.node.createSVGPoint(); 
+           t.x = b.left;
+           t.y = b.top;
+           let ptn = t.matrixTransform(offset.inverse());
+           return [Number((ptn.x + ptn.width/2).toFixed(2)), Number((ptn.y+ptn.height/2).toFixed(2))];
 
     }
     

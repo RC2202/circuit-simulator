@@ -38,6 +38,7 @@ export class svgService{
     public objectSelected: EventEmitter<any> = new EventEmitter(true);
     public clickEvent: EventEmitter<any> = new EventEmitter(true);
     public drawWireEvent: EventEmitter<any> = new EventEmitter(true);
+    public redrawWireEvent: EventEmitter<any> = new EventEmitter(true);
     // screenCTM:any;
 
     svgInitialize(){ 
@@ -120,14 +121,17 @@ export class svgService{
     }
 
     dragEventOnComponent(el){
+        let self = this;
         let  onmove = function(x,y){
             // console.log('move drag');
             this.attr({
                 transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [x, y]
             });
+            self.redrawWireEvent.emit(this.selectedComponentID);
         }
         let onend = function (){
         // console.log('finished dragging');
+
         }
     
         let onstart =function (){

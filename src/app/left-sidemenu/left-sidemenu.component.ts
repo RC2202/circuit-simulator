@@ -22,6 +22,7 @@ export class leftSidemenu implements OnInit {
         private wire: wireService
     ) {
          this.svg.drawWireEvent.subscribe(ev => this.wire.drawWire(ev));
+         this.svg.redrawWireEvent.subscribe(ev => this.wire.reWire(ev));
     }
     
     ngOnInit() {
@@ -32,7 +33,7 @@ export class leftSidemenu implements OnInit {
     loadElements(){
         console.log('init_elements');
         this.elements.push( new electricalComponents('resistor','R',
-          `<g id="resistance">
+          `<g id="resistor">
                 <g>
                 <path id="path4172" d="m180 95 1 18-11 9 22 9-22 10 22 10-11 8 0 18" style="fill:none;stroke-width:2.13047051;stroke:#000"/>
                 <text x = "136" y = "144" fill = "red" transform = "rotate(-90, 165, 144)">R = 20ohm</text>
@@ -43,9 +44,9 @@ export class leftSidemenu implements OnInit {
                 <text id="vals" x= "206" y = "139" width= "130" height = "80">2A</text>
 				
                 </g>
-                <rect id= "resistance_rect" y="97" x="151" height="80" width="60" style="fill-rule:nonzero;fill:rgba(0,0,0,0);stroke-dasharray:none;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4"/>
-                <rect id= "resistance_positive"  y="87" x="175" height="10" width="10" style="fill-rule:nonzero;fill:#fff ;stroke: #000;stroke-dasharray:none;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4"/>
-                <rect id= "resistance_negative" y="177" x="175" height="10" width="10" style="fill-rule:nonzero;fill:#fff ;stroke: #000;stroke-dasharray:none;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4"/> 
+                <rect id= "resistor_rect" y="97" x="151" height="80" width="60" style="fill-rule:nonzero;fill:rgba(0,0,0,0);stroke-dasharray:none;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4"/>
+                <rect id= "resistor_positive"  y="87" x="175" height="10" width="10" style="fill-rule:nonzero;fill:#fff ;stroke: #000;stroke-dasharray:none;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4"/>
+                <rect id= "resistor_negative" y="177" x="175" height="10" width="10" style="fill-rule:nonzero;fill:#fff ;stroke: #000;stroke-dasharray:none;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4"/> 
             </g>`,
             20,
             ['ohm', 'K ohm', 'M ohm'],
