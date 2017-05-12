@@ -22,11 +22,9 @@ export class wireService{
     dummyV : any;
     dummy: any;
     allPathsArray: any;
-
+    currentPath: any;
     drawWire(terminals ){
-       if(!this.AreUniqueTerminals(terminals)){
-            return;
-       }; 
+ 
         console.log('drawWire');
         let selectedPath;
         this.dummyH = [
@@ -35,8 +33,7 @@ export class wireService{
             (terminals[0][1] + terminals[1][1])/2,
             (-terminals[0][1] + 3*terminals[1][1])/2,
             (3*terminals[0][1] - terminals[1][1])/2
-        ]; //terminals[0][1];//
-
+        ]; 
         this.dummyV = [
             terminals[0][0],
             terminals[1][0],
@@ -45,14 +42,41 @@ export class wireService{
             (3*terminals[0][0] - terminals[1][0])/2,
             ];
         this.dummy = [this.dummyH, this.dummyV];
-        
+        this.BBox  = this.generateBoundryForEachElem();
+
+
+        if(!this.AreUniqueTerminals(terminals)){
+            for(let t in this.dummy){
+            for(let tu of this.dummy[t]){
+                let pth;
+                if(t == '0'){
+                    pth = this.pth_horizontal(tu, terminals);
+                }else{
+                    pth = this.pth_vertical(tu, terminals);
+                }
+                if(this.renderAndCheckPath(pth, this.currentPath)){
+                    return
+                }
+                //call a function to draw and check
+                // if(this.renderAndCheckPath(pth, selectedPath)){
+                //    this.svg.pathArray.push(new wires(selectedPath, [terminals[0][3], terminals[1][3]], selectedPath.id ));
+                //     return 1;
+                // };
+                
+            }
+        }
+            return;
+       };
+        // below are required if path is new path
+
+        // selection of the added path
         this.svg.paths.el("path").attr({
             d: this.pth_horizontal(this.dummy[0][0], terminals)
         });
         this.allPathsArray = this.svg.paths.selectAll('path');
         selectedPath = this.allPathsArray[this.allPathsArray.length-1];
 
-        this.BBox  = this.generateBoundryForEachElem();
+        // assigning highlight to path
 
         selectedPath.hover(function(){
             selectedPath.addClass('highlightPath')
@@ -195,59 +219,54 @@ export class wireService{
         // get the node ends of the wire (other end)
         // solve for their location
         // draw wire
+        console.log('rewire');
+        id = Number(id) + 1;
         this.svg.arrayOfTerminals = [];
 
-        for(let i of this.svg.pathArray){
-            let p = i.nodesOnStart.indexOf(id);
-            let n = i.nodesOnStart.indexOf(-id);
+        for(let currentPath of this.svg.pathArray){
+            let p = currentPath.nodesOnStart.indexOf(id);
+            let n = currentPath.nodesOnStart.indexOf(-id);
 
 
             if(p!= -1 || n!= -1){
                 // positive node 
-                this.findTerminalCoordinate(i.nodesOnStart[0]);
-                this.findTerminalCoordinate(i.nodesOnStart[1]);
+                this.findTerminalCoordinate(currentPath.nodesOnStart[0]);
+                this.findTerminalCoordinate(currentPath.nodesOnStart[1]);
+                this.currentPath =currentPath.svgRefElem;
                 this.drawWire(this.svg.arrayOfTerminals);
                 this.svg.arrayOfTerminals = [];
 
-            }
-            // if(n!= -1){
-            //     // negative node  
-            //     if(n == 1){
-                    
-            //     }else{
-
-            //     }
-
-            // }
-           
+            }        
         }
     }
 
     findTerminalCoordinate(terminalID){
         let isPositive = terminalID>=0;
         
-        let temp = this.svg.getSelectedObject(math.abs(terminalID), 'element');
-        let pterm = temp[1].svg.elements.name+'_positive';
-        let nterm =  temp[1].svg.elements.name+'_negative';;
+        let temp = this.svg.getElemBasedOnPosId(math.abs(terminalID));
+        let pterm ='#'+ temp.elements.name+'_positive';
+        let nterm = '#'+ temp.elements.name+'_negative';;
         if(isPositive){
-           var x=  temp[1].svgRefElem.select(pterm);
+           var x=  temp.svgRefElem.select(pterm);
         }else{
-            var x=  temp[1].svgRefElem.select(nterm);
+            var x=  temp.svgRefElem.select(nterm);
         }
-         var node =   this.getBBoxCentre(x);
-        this.svg.arrayOfTerminals.push([node[0], node[1], temp[1], terminalID]);
+        var node =   this.getBBoxCentre(x);
+        this.svg.arrayOfTerminals.push([node[0], node[1], temp, terminalID]);
         
     }
 
     getBBoxCentre(ref){
-           let b =  ref.node.getBoundingClientRect(); // top left bottom right width height
-           let offset = this.svg.paper.node.getScreenCTM();// offset.e, offset.f
-           let t = this.svg.paper.node.createSVGPoint(); 
-           t.x = b.left;
-           t.y = b.top;
-           let ptn = t.matrixTransform(offset.inverse());
-           return [Number((ptn.x + ptn.width/2).toFixed(2)), Number((ptn.y+ptn.height/2).toFixed(2))];
+        let b =  ref.node.getBoundingClientRect(); // top left bottom right width height
+        let offset = this.svg.paper.node.getScreenCTM();// offset.e, offset.f
+        let t = this.svg.paper.node.createSVGPoint(); 
+        t.x = b.left;
+        t.y = b.top;
+        let ptn = t.matrixTransform(offset.inverse());
+        return [Number((ptn.x + b.width/2 ).toFixed(2)), Number((ptn.y + b.height/2).toFixed(2))];
 
     }
+
+    
     
 }

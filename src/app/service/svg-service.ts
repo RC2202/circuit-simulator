@@ -123,20 +123,29 @@ export class svgService{
     dragEventOnComponent(el){
         let self = this;
         let  onmove = function(x,y){
-            // console.log('move drag');
+            console.log('move drag');
             this.attr({
                 transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [x, y]
             });
-            self.redrawWireEvent.emit(this.selectedComponentID);
+            self.redrawWireEvent.emit(self.objectOnPoint[0]);
         }
         let onend = function (){
-        // console.log('finished dragging');
-
+        console.log('finished dragging');
+        // self.elemOnPoint =undefined
         }
     
-        let onstart =function (){
-            // console.log('start drag');
+        let onstart =function (x,y){
+            console.log('start drag');
+            console.log(x, y);
             this.data('origTransform', this.transform().local );
+            self.elemOnPoint =  Snap.getElementByPoint(x,y);
+            if(self.elemOnPoint.type =="rect"){
+                self.removeHighlightClass();
+                self.elemOnPoint.addClass("highlight");
+                self.selectedComponentID = self.elemOnPoint.parent().id;
+                self.objectOnPoint = self.getSelectedObject(self.selectedComponentID, "element");
+
+            }
         }  
         el.drag(onmove, onstart, onend);
     }
@@ -369,6 +378,16 @@ export class svgService{
        }
        
        
+   }
+
+   getElemBasedOnPosId(posId){
+       for (let item in this.currentArray) {
+                // console.log(item); 
+                if(this.currentArray[item].positiveNodeID == posId){
+                    return this.currentArray[item]
+                }
+            }
+            return 0
    }
 
 
