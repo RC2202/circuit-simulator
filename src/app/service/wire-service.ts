@@ -25,7 +25,7 @@ export class wireService{
     currentPath: any;
     drawWire(terminals ){
  
-        console.log('drawWire');
+        // console.log('drawWire');
         let selectedPath;
         this.dummyH = [
             terminals[0][1],
@@ -219,7 +219,7 @@ export class wireService{
         // get the node ends of the wire (other end)
         // solve for their location
         // draw wire
-        console.log('rewire');
+        // console.log('rewire');
         id = Number(id) + 1;
         this.svg.arrayOfTerminals = [];
 

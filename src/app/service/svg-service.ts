@@ -123,20 +123,20 @@ export class svgService{
     dragEventOnComponent(el){
         let self = this;
         let  onmove = function(x,y){
-            console.log('move drag');
+            // console.log('move drag');
             this.attr({
                 transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [x, y]
             });
             self.redrawWireEvent.emit(self.objectOnPoint[0]);
         }
         let onend = function (){
-        console.log('finished dragging');
-        // self.elemOnPoint =undefined
+        // console.log('finished dragging');
+        // self.object =undefined
         }
     
         let onstart =function (x,y){
-            console.log('start drag');
-            console.log(x, y);
+            // console.log('start drag');
+            // console.log(x, y);
             this.data('origTransform', this.transform().local );
             self.elemOnPoint =  Snap.getElementByPoint(x,y);
             if(self.elemOnPoint.type =="rect"){
@@ -164,7 +164,7 @@ export class svgService{
     onPaperClick(ev){
         // console.log(this);
         // console.log(ev);
-        console.log('called');
+        // console.log('called');
         let svg = this.paper.node;
         var pt = svg.createSVGPoint();
         pt.x = ev[0];
@@ -175,8 +175,8 @@ export class svgService{
         this.removeHighlightClass();
 
         if(this.elemOnPoint.type =="path"){
-            console.log('on path');
-            console.log(this.elemOnPoint);
+            // console.log('on path');
+            // console.log(this.elemOnPoint);
             this.elemOnPoint.addClass("highlight");
             this.selectedComponentID = this.elemOnPoint.id;
             this.objectOnPoint = this.getSelectedObject(this.selectedComponentID, "path");
@@ -309,7 +309,7 @@ export class svgService{
         console.log('deleteSelectedObject');
         if(this.objectOnPoint != null){
             this.objectOnPoint[1].svgRefElem.remove();
-            console.log(this.currentArray);
+            // console.log(this.currentArray);
             //get the selected object and delete it
             if(this.objectOnPoint[2] =="element"){
                 this.deleteAssociatedPaths(this.objectOnPoint[1].positiveNodeID);
@@ -361,7 +361,7 @@ export class svgService{
 
 
    deleteAssociatedPaths(pId){
-       console.log(pId);
+    //    console.log(pId);
        let count = 0;
        let clonePathArray = JSON.parse(
            JSON.stringify(
