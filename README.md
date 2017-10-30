@@ -2,7 +2,7 @@
 
 Circuit simulator built using **Angular2** and **Snap**
 
-# Test Runninng app
+# Test Running app
 
 Link: [https://rc2202.github.io/circuit-simulator/](https://rc2202.github.io/circuit-simulator/)
 
